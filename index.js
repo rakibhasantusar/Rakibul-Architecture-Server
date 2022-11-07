@@ -15,7 +15,16 @@ app.use(express.json())
 const uri = `mongodb+srv://${process.env.RAKIBUL_USER}:${process.env.RAKIBUL_PASS}@cluster0.79y2pqi.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+async function run() {
+    try {
+        const serviceCollection = client.db('rk-arcitecture').collection('services')
+    }
+    finally {
 
+    }
+}
+
+run().catch(err => console.error(err))
 
 
 
