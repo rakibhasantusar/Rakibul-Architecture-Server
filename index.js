@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId, ObjectID } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
 require("dotenv").config()
 
 const app = express();
@@ -72,8 +72,8 @@ async function run() {
         app.get("/reviews/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
-            const service = await reviewCollection.findOne(query)
-            res.send(service)
+            const review = await reviewCollection.findOne(query)
+            res.send(review)
         })
 
         app.post("/reviews", async (req, res) => {
@@ -83,15 +83,19 @@ async function run() {
         })
         app.patch("/reviews/:id", async (req, res) => {
             const id = req.params.id;
-            const upDate = req.body;
+
             const query = { _id: ObjectId(id) }
             const updateDoc = {
-                $set: {
-                    upDate: upDate,
-                }
+                $set: req.body
+
             }
             const result = await reviewCollection.updateOne(query, updateDoc)
-            res.send(result)
+            if (result.matchedCount) {
+                res.send({
+                    success: true,
+                })
+            }
+
         })
 
         app.delete("/reviews:id", async (req, res) => {
