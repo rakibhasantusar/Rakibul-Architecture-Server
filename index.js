@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, ObjectID } = require('mongodb');
 require("dotenv").config()
 
 const app = express();
@@ -45,6 +45,12 @@ async function run() {
             res.send(service)
         })
 
+        app.post("/services", async (req, res) => {
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service)
+            res.send(result)
+        })
+
         //review area
 
         app.get('/reviews', async (req, res) => {
@@ -63,11 +69,36 @@ async function run() {
             const reviews = await cursor.toArray()
             res.send(reviews)
         })
+        app.get("/reviews/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const service = await reviewCollection.findOne(query)
+            res.send(service)
+        })
 
         app.post("/reviews", async (req, res) => {
             const review = req.body;
             const result = await reviewCollection.insertOne(review)
             res.send(result)
+        })
+        app.patch("/reviews/:id", async (req, res) => {
+            const id = req.params.id;
+            const upDate = req.body;
+            const query = { _id: ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    upDate: upDate,
+                }
+            }
+            const result = await reviewCollection.updateOne(query, updateDoc)
+            res.send(result)
+        })
+
+        app.delete("/reviews:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewCollection.deleteOne(query)
+            res.send(result);
         })
 
     }
